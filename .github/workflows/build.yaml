@@ -13,6 +13,8 @@ jobs:
       - name: Print directory
         run: pwd
       - name: Check dotnet cli
-        run: dotnet
+        run: dotnet build
+      - name: Check build files
+        run: ls src/TrickingLibrary.Api/ -R
       - name: Check npm
-        run: npm
+        run: npm -v
