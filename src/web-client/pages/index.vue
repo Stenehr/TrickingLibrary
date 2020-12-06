@@ -5,18 +5,15 @@
                 <logo />
                 <vuetify-logo />
             </div>
-
             <div v-if="tricks">
                 <p :key="indx" v-for="(t, indx) in tricks">
                     {{ t.name }}
                 </p>
             </div>
-
             <div>
                 <v-text-field label="Trick name" v-model="trickName" />
                 <v-btn @click="saveTrick">Save trick</v-btn>
             </div>
-
             {{ message }}
             <v-btn @click="reset">Reset</v-btn>
             <v-btn @click="resetTricks">ResetTricks</v-btn>
