@@ -23,7 +23,7 @@ export const actions = {
         commit("setTricks", { tricks })
     },
 
-    async createTrick({ commit, dispatch }, { trick }) {
+    async createTrick({ dispatch }, { trick }) {
         await Axios.post("http://localhost:5000/api/tricks", trick);
         dispatch("fetchTricks");
     }
