@@ -1,18 +1,56 @@
 <template>
     <div>
-        <v-file-input accept="video/*" @change="handleFile">
-        </v-file-input>
-
         <div v-if="tricks">
-            <p :key="indx" v-for="(t, indx) in tricks">
+            <div :key="indx" v-for="(t, indx) in tricks">
                 {{ t.name }}
-            </p>
+                <div>
+                    <video controls :src="`http://localhost:5000/api/videos/${t.video}`"></video>
+                </div>
+            </div>
         </div>
-        <div>
-            <v-text-field label="Trick name" v-model="trickName" />
-            <v-btn @click="saveTrick">Save trick</v-btn>
-        </div>
-        <v-btn @click="resetTricks">ResetTricks</v-btn>
+
+
+        <v-stepper v-model="step">
+            <v-stepper-header>
+                <v-stepper-step :complete="step > 1" step="1">
+                    Upload Video
+                </v-stepper-step>
+
+                <v-divider></v-divider>
+
+                <v-stepper-step :complete="step > 2" step="2">
+                    Trick Information
+                </v-stepper-step>
+
+                <v-divider></v-divider>
+
+                <v-stepper-step step="3">
+                    Confirmation
+                </v-stepper-step>
+            </v-stepper-header>
+
+            <v-stepper-items>
+                <v-stepper-content step="1">
+                    <div>
+                        <v-file-input accept="video/*" @change="handleFile">
+                        </v-file-input>
+                    </div>
+                </v-stepper-content>
+
+                <v-stepper-content step="2">
+                    <div>
+                        <v-text-field label="Trick name" v-model="trickName" />
+                        <v-btn @click="saveTrick">Save trick</v-btn>
+                    </div>
+                </v-stepper-content>
+
+                <v-stepper-content step="3">
+                    <div>
+                        Success
+                    </div>
+                </v-stepper-content>
+            </v-stepper-items>
+        </v-stepper>
     </div>
 </template>
 
@@ -21,38 +59,47 @@ import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
     data: () => ({
+        step: 1,
         trickName: ""
     }),
 
     computed: {
-        ...mapState("tricks", {
-            tricks: state => state.tricks
-        })
+        ...mapState("tricks", ["tricks"]),
+        ...mapState("videos", ["uploadPromise"]),
     },
 
     methods: {
-        ...mapMutations("tricks", {
-            resetTricks: "reset"
+        ...mapMutations("videos", {
+            resetVideos: "reset"
         }),
 
         ...mapActions("tricks", ["createTrick"]),
 
-        async saveTrick() {
-            await this.createTrick({ trick: { name: this.trickName } });
-            this.trickName = "";
-        },
+        ...mapActions("videos", ["startVideoUpload"]),
 
         async handleFile(file) {
             if (!file) {
                 return;
             }
 
-            const formData = new FormData();
-            formData.append("video", file);
+            const form = new FormData();
+            form.append("video", file);
+            this.startVideoUpload({ form });
+            this.step++;
+        },
 
-            const result = await this.$axios.$post("http://localhost:5000/api/videos", formData);
-            console.log(`Result: ${result}`);
-        }
+        async saveTrick() {
+            if (!this.uploadPromise) {
+                console.log("No video uploadPromise");
+                return;
+            }
+
+            const video = await this.uploadPromise;
+            await this.createTrick({ trick: { name: this.trickName, video } });
+            this.trickName = "";
+            this.resetVideos();
+            this.step++;
+        },
     }
 
     // async fetch() {
