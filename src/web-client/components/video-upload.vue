@@ -2,7 +2,6 @@
     <v-dialog :value="active" persistant>
         <template v-slot:activator>
             <v-btn depressed @click="toggleActivity">
-                Upload
             </v-btn>
         </template>
         <v-stepper v-model="step">

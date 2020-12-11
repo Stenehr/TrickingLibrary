@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TrickingLibrary.Api.Models;
+using TrickingLibrary.Domain;
+using TrickingLibrary.Infrastructure;
 
 namespace TrickingLibrary.Api.Controllers
 {
@@ -9,36 +14,51 @@ namespace TrickingLibrary.Api.Controllers
     [Route("api/[controller]")]
     public class TricksController : ControllerBase
     {
-        private readonly TrickStore _store;
+        private readonly AppDbContext _context;
 
-        public TricksController(TrickStore store)
+        public TricksController(AppDbContext context)
         {
-            _store = store;
+            _context = context;
         }
 
         [HttpGet]
-        public IActionResult All() => Ok(_store.All);
+        public IEnumerable<Trick> All() => _context.Tricks;
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id) => Ok(_store.All.FirstOrDefault(x => x.Id == id));
+        public Trick Get(int id) => _context.Tricks.FirstOrDefault(x => x.Id == id);
+
+        [HttpGet("{trickId}/submissions")]
+        public IEnumerable<Submission> ListSubmissions(int trickId) =>
+            _context.Submissions.Where(x => x.TrickId == trickId).ToList();
 
         [HttpPost]
-        public IActionResult Create([FromBody] Trick trick)
+        public async Task<Trick> Create([FromBody] Trick trick)
         {
-            _store.Add(trick);
-            return Ok();
+            await _context.AddAsync(trick);
+            await _context.SaveChangesAsync();
+            return trick;
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Trick trick)
+        public async Task<Trick> Update([FromBody] Trick trick)
         {
-            throw new NotImplementedException();
+            if (trick?.Id == null)
+            {
+                return null;
+            }
+
+            await _context.AddAsync(trick);
+            await _context.SaveChangesAsync();
+            return trick;
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            var trick = _context.Tricks.FirstOrDefault(x => x.Id == id);
+            trick.Deleted = true;
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
     }

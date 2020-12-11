@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TrickingLibrary.Api.Models;
+using TrickingLibrary.Infrastructure;
 
 namespace TrickingLibrary.Api
 {
@@ -14,7 +16,7 @@ namespace TrickingLibrary.Api
         {
             services.AddControllers();
 
-            services.AddSingleton<TrickStore>();
+            services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("Dev"));
 
             services.AddCors(options => options.AddPolicy(AllCors, builder =>
                 builder.AllowAnyHeader()

@@ -4,6 +4,7 @@
             <v-toolbar-title>Trick Library</v-toolbar-title>
 
             <v-spacer></v-spacer>
+
             <video-upload />
         </v-app-bar>
         <v-main>
