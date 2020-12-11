@@ -1,5 +1,10 @@
 <template>
     <v-dialog :value="active" persistant>
+        <template v-slot:activator>
+            <v-btn depressed @click="toggleActivity">
+                Upload
+            </v-btn>
+        </template>
         <v-stepper v-model="step">
             <v-stepper-header>
                 <v-stepper-step :complete="step > 1" step="1">
@@ -82,7 +87,11 @@ export default {
 
     methods: {
         ...mapActions("videos-upload", ["startVideoUpload", "createTrick"]),
-        ...mapMutations("videos-upload", ["toggleActivity", "reset", "setType"]),
+        ...mapMutations("videos-upload", [
+            "toggleActivity",
+            "reset",
+            "setType"
+        ]),
         async handleFile(file) {
             if (!file) {
                 return;

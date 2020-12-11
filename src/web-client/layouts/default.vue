@@ -4,12 +4,8 @@
             <v-toolbar-title>Trick Library</v-toolbar-title>
 
             <v-spacer></v-spacer>
-
-            <v-btn depressed @click="toggleActivity">
-                Upload
-            </v-btn>
+            <video-upload />
         </v-app-bar>
-        <video-upload />
         <v-main>
             <nuxt />
         </v-main>
@@ -17,14 +13,11 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
 import VideoUpload from '../components/video-upload.vue';
 
 export default {
     components: {
         VideoUpload
     },
-
-    methods: mapMutations("videos-upload", ["toggleActivity"])
 };
 </script>
