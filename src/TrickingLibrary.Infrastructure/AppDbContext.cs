@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TrickingLibrary.Api.Models;
 using TrickingLibrary.Domain;
 
 namespace TrickingLibrary.Infrastructure

@@ -1,8 +1,7 @@
-﻿namespace TrickingLibrary.Api.Models
+﻿namespace TrickingLibrary.Domain
 {
-    public class Submission
+    public class Submission : BaseEntity
     {
-        public int Id { get; set; }
         public int TrickId { get; set; }
         public string Video { get; set; }
         public string Description { get; set; }

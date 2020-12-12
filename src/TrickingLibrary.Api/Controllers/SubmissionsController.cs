@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TrickingLibrary.Api.Models;
+using TrickingLibrary.Domain;
 using TrickingLibrary.Infrastructure;
 
 namespace TrickingLibrary.Api.Controllers
@@ -48,7 +48,7 @@ namespace TrickingLibrary.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var submission = _context.Tricks.FirstOrDefault(x => x.Id == id);
+            var submission = _context.Submissions.FirstOrDefault(x => x.Id == id);
             submission.Deleted = true;
             await _context.SaveChangesAsync();
             return Ok();
