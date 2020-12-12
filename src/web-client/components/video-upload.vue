@@ -1,7 +1,8 @@
 <template>
     <v-dialog :value="active" persistant>
-        <template v-slot:activator>
-            <v-btn depressed @click="toggleActivity">
+        <template v-slot:activator="{on}">
+            <v-btn depressed v-on="on" @click="toggleActivity">
+                UPLOAD
             </v-btn>
         </template>
         <v-stepper v-model="step">
@@ -13,28 +14,34 @@
                 <v-divider></v-divider>
 
                 <v-stepper-step :complete="step > 2" step="2">
-                    Upload Video
+                    Trick information
                 </v-stepper-step>
 
                 <v-divider></v-divider>
 
                 <v-stepper-step :complete="step > 3" step="3">
-                    Trick Information
+                    Upload Video
                 </v-stepper-step>
 
                 <v-divider></v-divider>
 
-                <v-stepper-step step="4">
-                    Confirmation
+                <v-stepper-step :complete="step > 4" step="4">
+                    Submission Information
+                </v-stepper-step>
+
+                <v-divider></v-divider>
+
+                <v-stepper-step step="5">
+                    Review
                 </v-stepper-step>
             </v-stepper-header>
 
             <v-stepper-items>
                 <v-stepper-content step="1">
                     <div class="d-flex flex-column align-center">
-                        <v-btn @click="setType(uploadType.TRICK)">Trick</v-btn>
+                        <v-btn @click="setType({ type: uploadType.TRICK })">Trick</v-btn>
                         <v-btn
-                            @click="setType(uploadType.SUBMISSION)"
+                            @click="setType({ type: uploadType.SUBMISSION })"
                             class="mt-2"
                             >Submission</v-btn
                         >
@@ -43,19 +50,26 @@
 
                 <v-stepper-content step="2">
                     <div>
-                        <v-file-input accept="video/*" @change="handleFile">
-                        </v-file-input>
+                        <v-text-field label="Trick name" v-model="trickName" />
+                        <v-btn @click="incrementStep">Save Trick</v-btn>
                     </div>
                 </v-stepper-content>
 
                 <v-stepper-content step="3">
                     <div>
-                        <v-text-field label="Trick name" v-model="trickName" />
-                        <v-btn @click="saveTrick">Save trick</v-btn>
+                        <v-file-input accept="video/*" @change="handleFile">
+                        </v-file-input>
                     </div>
                 </v-stepper-content>
 
                 <v-stepper-content step="4">
+                    <div>
+                        <v-text-field label="Description" v-model="submission" />
+                        <v-btn @click="saveTrick">Save Submission</v-btn>
+                    </div>
+                </v-stepper-content>
+
+                <v-stepper-content step="5">
                     <div>
                         Review
                     </div>
@@ -74,7 +88,8 @@ import { UPLOAD_TYPE } from "../data/enums";
 
 export default {
     data: () => ({
-        trickName: ""
+        trickName: "",
+        submission: "",
     }),
 
     computed: {
@@ -89,7 +104,8 @@ export default {
         ...mapMutations("videos-upload", [
             "toggleActivity",
             "reset",
-            "setType"
+            "setType",
+            "incrementStep"
         ]),
         async handleFile(file) {
             if (!file) {

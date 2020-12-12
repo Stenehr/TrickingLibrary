@@ -49,6 +49,9 @@ namespace TrickingLibrary.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var submission = _context.Submissions.FirstOrDefault(x => x.Id == id);
+            if (submission == null)
+                return NotFound();
+
             submission.Deleted = true;
             await _context.SaveChangesAsync();
             return Ok();

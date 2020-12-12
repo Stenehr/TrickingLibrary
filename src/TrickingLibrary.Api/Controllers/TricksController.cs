@@ -53,6 +53,9 @@ namespace TrickingLibrary.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var trick = _context.Tricks.FirstOrDefault(x => x.Id == id);
+            if (trick == null)
+                return NotFound();
+            
             trick.Deleted = true;
             await _context.SaveChangesAsync();
             return Ok();

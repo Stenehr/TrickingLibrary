@@ -1,3 +1,5 @@
+import { UPLOAD_TYPE } from "../data/enums";
+
 const initState = () => ({
     uploadPromise: null,
     active: false,
@@ -17,11 +19,19 @@ export const mutations = {
 
     setType(state, { type }) {
         state.type = type;
-        state.step++;
+        if (type === UPLOAD_TYPE.TRICK) {
+            state.step++;
+        } else if (type === UPLOAD_TYPE.SUBMISSION) {
+            state.step += 2;
+        }
     },
 
     setUploadPromise(state, { uploadPromise }) {
         state.uploadPromise = uploadPromise;
+        state.step++;
+    },
+
+    incrementStep(state) {
         state.step++;
     },
 
