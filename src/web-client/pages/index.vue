@@ -8,7 +8,7 @@
 
         <div v-if="submissions">
             <div :key="indx" v-for="(s, indx) in submissions">
-                {{ s.description }}
+                {{ s.id }} - {{ s.description }} trickId: {{ s.trickId }}
                 <div>
                     <video
                         controls

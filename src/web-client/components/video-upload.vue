@@ -1,6 +1,6 @@
 <template>
     <v-dialog :value="active" persistant>
-        <template v-slot:activator="{on}">
+        <template v-slot:activator="{ on }">
             <v-btn depressed v-on="on" @click="toggleActivity">
                 UPLOAD
             </v-btn>
@@ -39,7 +39,9 @@
             <v-stepper-items>
                 <v-stepper-content step="1">
                     <div class="d-flex flex-column align-center">
-                        <v-btn @click="setType({ type: uploadType.TRICK })">Trick</v-btn>
+                        <v-btn @click="setType({ type: uploadType.TRICK })"
+                            >Trick</v-btn
+                        >
                         <v-btn
                             @click="setType({ type: uploadType.SUBMISSION })"
                             class="mt-2"
@@ -64,7 +66,11 @@
 
                 <v-stepper-content step="4">
                     <div>
-                        <v-text-field label="Description" v-model="submission" />
+                        <v-text-field label="TrickId" v-model="trickId" />
+                        <v-text-field
+                            label="Description"
+                            v-model="submission"
+                        />
                         <v-btn @click="incrementStep">Save Submission</v-btn>
                     </div>
                 </v-stepper-content>
@@ -90,6 +96,7 @@ export default {
     data: () => ({
         trickName: "",
         submission: "",
+        trickId: null
     }),
 
     computed: {
@@ -126,8 +133,12 @@ export default {
             const video = await this.uploadPromise;
             await this.createTrick({
                 trick: { name: this.trickName },
-                submission: { description: this.submission, video }
-                });
+                submission: {
+                    description: this.submission,
+                    video,
+                    trickId: !!this.trickId ? Number(this.trickId) : null
+                }
+            });
             this.trickName = "";
             this.submission = "";
             this.reset();
