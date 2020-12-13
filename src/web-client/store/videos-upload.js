@@ -46,8 +46,12 @@ export const actions = {
         commit("setUploadPromise", { uploadPromise })
     },
     
-    async createTrick({ dispatch }, { trick }) {
-        await this.$axios.$post("/api/tricks", trick);
+    async createTrick({ dispatch }, { trick, submission }) {
+        const createdTrick = await this.$axios.$post("/api/tricks", trick);
+        submission.trickId = createdTrick.id;
+        const createdSubmission = await this.$axios.$post("/api/submissions", submission);
+
         await dispatch("tricks/fetchTricks");
+        await dispatch("submissions/fetchSubmissions");
     }
 }

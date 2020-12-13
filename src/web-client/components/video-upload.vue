@@ -65,13 +65,13 @@
                 <v-stepper-content step="4">
                     <div>
                         <v-text-field label="Description" v-model="submission" />
-                        <v-btn @click="saveTrick">Save Submission</v-btn>
+                        <v-btn @click="incrementStep">Save Submission</v-btn>
                     </div>
                 </v-stepper-content>
 
                 <v-stepper-content step="5">
                     <div>
-                        Review
+                        <v-btn @click="save">Save</v-btn>
                     </div>
                 </v-stepper-content>
             </v-stepper-items>
@@ -117,15 +117,19 @@ export default {
             this.startVideoUpload({ form });
         },
 
-        async saveTrick() {
+        async save() {
             if (!this.uploadPromise) {
                 console.log("No video uploadPromise");
                 return;
             }
 
             const video = await this.uploadPromise;
-            await this.createTrick({ trick: { name: this.trickName, video } });
+            await this.createTrick({
+                trick: { name: this.trickName },
+                submission: { description: this.submission, video }
+                });
             this.trickName = "";
+            this.submission = "";
             this.reset();
         }
     }
