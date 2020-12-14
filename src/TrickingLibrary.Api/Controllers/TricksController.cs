@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,15 +23,17 @@ namespace TrickingLibrary.Api.Controllers
         public IEnumerable<Trick> All() => _context.Tricks;
 
         [HttpGet("{id}")]
-        public Trick Get(int id) => _context.Tricks.FirstOrDefault(x => x.Id == id);
+        public Trick Get(string id) => _context.Tricks.FirstOrDefault(x => x.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase));
 
         [HttpGet("{trickId}/submissions")]
-        public IEnumerable<Submission> ListSubmissionsForTrick(int trickId) =>
-            _context.Submissions.Where(x => x.TrickId == trickId).ToList();
+        public IEnumerable<Submission> ListSubmissionsForTrick(string trickId) =>
+            _context.Submissions.Where(x => x.TrickId.Equals(trickId, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
         [HttpPost]
         public async Task<Trick> Create([FromBody] Trick trick)
         {
+            trick.Id = trick.Name.Replace(" ", "-").ToLowerInvariant();
+
             await _context.AddAsync(trick);
             await _context.SaveChangesAsync();
             return trick;
@@ -39,7 +42,7 @@ namespace TrickingLibrary.Api.Controllers
         [HttpPut]
         public async Task<Trick> Update([FromBody] Trick trick)
         {
-            if (trick?.Id == null)
+            if (string.IsNullOrEmpty(trick?.Id))
             {
                 return null;
             }
@@ -50,9 +53,9 @@ namespace TrickingLibrary.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var trick = _context.Tricks.FirstOrDefault(x => x.Id == id);
+            var trick = _context.Tricks.FirstOrDefault(x => x.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase));
             if (trick == null)
                 return NotFound();
             

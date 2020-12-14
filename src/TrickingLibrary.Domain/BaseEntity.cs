@@ -1,8 +1,8 @@
 ﻿namespace TrickingLibrary.Domain
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity<TKey>
     {
-        public int Id { get; set; }
+        public TKey Id { get; set; }
         public bool Deleted { get; set; }
     }
 }

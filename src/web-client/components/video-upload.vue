@@ -136,7 +136,7 @@ export default {
                 submission: {
                     description: this.submission,
                     video,
-                    trickId: !!this.trickId ? Number(this.trickId) : null
+                    trickId: !!this.trickId ? this.trickId : null
                 }
             });
             this.trickName = "";
