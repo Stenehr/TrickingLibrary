@@ -4,35 +4,18 @@ const initState = () => ({
     uploadPromise: null,
     active: false,
     type: "",
-    step: 1,
 })
 
 export const state = initState;
 
 export const mutations = {
-    toggleActivity(state) {
-        state.active = !state.active;
-        if (!state.active) {
-            Object.assign(state, initState());
-        }
-    },
-
-    setType(state, { type }) {
+    activate(state, { type }) {
+        state.active = true;
         state.type = type;
-        if (type === UPLOAD_TYPE.TRICK) {
-            state.step++;
-        } else if (type === UPLOAD_TYPE.SUBMISSION) {
-            state.step += 2;
-        }
     },
 
     setUploadPromise(state, { uploadPromise }) {
         state.uploadPromise = uploadPromise;
-        state.step++;
-    },
-
-    incrementStep(state) {
-        state.step++;
     },
 
     reset(state) {
@@ -44,14 +27,5 @@ export const actions = {
     startVideoUpload({ commit }, { form }) {
         const uploadPromise = this.$axios.$post("/api/videos", form);
         commit("setUploadPromise", { uploadPromise })
-    },
-    
-    async createTrick({ state, dispatch }, { trick, submission }) {
-        if (state.type === UPLOAD_TYPE.TRICK) {
-            const createdTrick = await this.$axios.$post("/api/tricks", trick);
-            submission.trickId = createdTrick.id;
-        }
-
-        await this.$axios.$post("/api/submissions", submission);
     }
 }

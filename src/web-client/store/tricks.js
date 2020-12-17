@@ -20,7 +20,7 @@ export const actions = {
         commit("setTricks", { tricks })
     },
 
-    async createTrick(context, { form }) {
-        await this.$axios.$post("/api/tricks", form);
+    createTrick(context, { form }) {
+        return this.$axios.$post("/api/tricks", form);
     }
 }
